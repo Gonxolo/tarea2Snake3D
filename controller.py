@@ -14,9 +14,10 @@ class Controller:
 
     def updatePos(self, time):
         # update sun position
-        self.sunPos[0] = self.r * np.cos(time) 
-        self.sunPos[1] = self.r * np.sin(time)
-        self.sunPos[2] = 1.5
+        #self.sunPos[0] = self.r * np.cos(time) 
+        #self.sunPos[1] = self.r * np.sin(time)
+        #self.sunPos[2] = 1.5
+        pass
 
 # we will use the global controller as communication with the callback function
 ctrl = Controller()
