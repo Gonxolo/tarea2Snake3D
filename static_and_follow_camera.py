@@ -6,9 +6,9 @@ import OpenGL.GL.shaders
 import numpy as np
 import sys
 
-from ex_controller import ctrl
-from ex_controller import on_key as _on_key
-import ex_model
+from controller import ctrl
+from controller import on_key as _on_key
+import model
 
 import transformations as tr
 import lighting_shaders as ls
@@ -22,8 +22,8 @@ if __name__ == "__main__":
     if not glfw.init():
         sys.exit()
 
-    width = 600
-    height = 600
+    width = 800
+    height = 800
 
     window = glfw.create_window(width, height, "Sphere", None, None)
 
@@ -56,18 +56,22 @@ if __name__ == "__main__":
 
     # Generaremos diversas cámaras.
     static_view = tr.lookAt(
-            np.array([10,10,5]), # eye
-            np.array([0,0,0]), # at
+            #np.array([10,10,5]), # eye
+            np.array([0,0,10]), # eye
+            np.array([0,0.0001,0]), # at
             np.array([0,0,1])  # up
         )
 
     skyBox = bs.createTextureCube('skybox.png')
     sun = model.generateSun(20, 20)
+    floor = bs.createTextureCube('img/rainbow1.png')
 
     GPUsun = es.toGPUShape(sun)
     GPUSkyBox = es.toGPUShape(skyBox, GL_REPEAT, GL_LINEAR)
+    GPUfloor = es.toGPUShape(floor, GL_REPEAT, GL_NEAREST)
 
     skybox_transform = tr.uniformScale(20)
+    floor_transform = tr.matmul([tr.translate(0,0,-10),tr.scale(16.2,16.2,1),tr.uniformScale(1)])
 
     t0 = glfw.get_time()
     while not glfw.window_should_close(window):
@@ -83,8 +87,8 @@ if __name__ == "__main__":
 
         if ctrl.followSun:
             view =  tr.lookAt(
-                np.array([0,0,4]),
-                ctrl.sunPos,  # The camera will be the sun
+                np.array([10,10,5]),
+                np.array([0,0,0]),#ctrl.sunPos,  # The camera will be the sun
                 np.array([0,0,1])
         )
 
@@ -100,6 +104,14 @@ if __name__ == "__main__":
         texture_pipeline.drawShape(GPUSkyBox)
         
 
+        glUseProgram(texture_pipeline.shaderProgram)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, floor_transform)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+
+        texture_pipeline.drawShape(GPUfloor)
+        
+
         # Telling OpenGL to use our shader program
         glUseProgram(pipeline.shaderProgram)
         transform = tr.translate(*ctrl.sunPos)
@@ -108,7 +120,7 @@ if __name__ == "__main__":
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
 
 
-        pipeline.drawShape(GPUsun)
+        #pipeline.drawShape(GPUsun)
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
 

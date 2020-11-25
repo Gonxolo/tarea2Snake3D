@@ -6,9 +6,9 @@ import OpenGL.GL.shaders
 import numpy as np
 import sys
 
-from ex_controller import ctrl
-from ex_controller import on_key as _on_key
-import ex_model
+from controller import ctrl
+from controller import on_key as _on_key
+import model
 
 import transformations as tr
 import lighting_shaders as ls
