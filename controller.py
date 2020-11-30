@@ -7,38 +7,49 @@ import numpy as np
 
 class Controller:
     def __init__(self):
-        self.fillPolygon = True
-        self.sunPos = np.zeros(3)
-        self.followSun = False
-        self.r = 5.0
+        self.snake = None
+        self.camera = None
 
-    def updatePos(self, time):
-        # update sun position
-        #self.sunPos[0] = self.r * np.cos(time) 
-        #self.sunPos[1] = self.r * np.sin(time)
-        #self.sunPos[2] = 1.5
-        pass
+    def on_key(self, window, key, scancode, action, mods):
 
-# we will use the global controller as communication with the callback function
-ctrl = Controller()
+        if not (action == glfw.REPEAT or action == glfw.PRESS or action == glfw.RELEASE):
+            return
 
-def on_key(window, key, scancode, action, mods):
+        if key == glfw.KEY_ESCAPE:
+            sys.exit()
+        
+        if (key == glfw.KEY_A or key == glfw.KEY_LEFT) and action == glfw.PRESS:
+            self.snake.turn = 1
+        
+        elif (key == glfw.KEY_A or key == glfw.KEY_LEFT) and action == glfw.RELEASE:
+            self.snake.turn = 0
+        
+        elif (key == glfw.KEY_D or key == glfw.KEY_LEFT) and action == glfw.PRESS:
+            self.snake.turn = -1
+        
+        elif (key == glfw.KEY_D or key == glfw.KEY_RIGHT) and action == glfw.RELEASE:
+            self.snake.turn = 0 
 
-    if action != glfw.PRESS:
-        return
-    
-    global ctrl
+        elif (key == glfw.KEY_W or key == glfw.KEY_UP) and (action == glfw.PRESS or action == glfw.REPEAT):
+            pass
+        
+        elif (key == glfw.KEY_S or key == glfw.KEY_DOWN) and (action == glfw.PRESS or action == glfw.REPEAT):
+            pass
+        
 
-    if key == glfw.KEY_SPACE:
-        ctrl.fillPolygon = not ctrl.fillPolygon
+        elif key == glfw.KEY_R:
+            self.camera.topView = False
+            self.camera.headView = True
+            self.camera.lolView = False
 
-    elif key == glfw.KEY_ESCAPE:
-        sys.exit()
+        elif key == glfw.KEY_E:
+            self.camera.topView = True
+            self.camera.headView = False
+            self.camera.lolView = False
 
-    elif key == glfw.KEY_E:
-        ctrl.followSun = not ctrl.followSun 
-
-    else:
-        print('Unknown key')
+        elif key == glfw.KEY_T:
+            self.camera.topView = False 
+            self.camera.headView = False 
+            self.camera.lolView = True
 
 
