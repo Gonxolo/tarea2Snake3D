@@ -8,7 +8,7 @@ v2 - Bug fixed: Textures were not binded
 
 from OpenGL.GL import *
 import OpenGL.GL.shaders
-from easy_shaders import GPUShape
+from lib.easy_shaders import GPUShape
 
 class SimpleFlatShaderProgram():
 

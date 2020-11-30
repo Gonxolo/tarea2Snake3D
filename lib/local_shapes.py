@@ -2,7 +2,7 @@
 
 import numpy as np
 
-import basic_shapes as bs
+import lib.basic_shapes as bs
 
 def createColorTriangleIndexation(start_index, a, b, c, color):
     # Defining locations and colors for each vertex of the shape    
