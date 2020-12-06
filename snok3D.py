@@ -13,11 +13,12 @@ import lib.easy_shaders as es
 import lib.basic_shapes as bs
 
 from controller import Controller
-from models.list import Snake, Camera
+from models.list import Camera, Floor
+from models.snake import *
 
 
 
-if __name__ == "__main__":
+def vista():
 
     # Initialize glfw
     if not glfw.init(): sys.exit()
@@ -33,9 +34,10 @@ if __name__ == "__main__":
     ctrl = Controller()
     glfw.set_key_callback(window, ctrl.on_key)
 
-    # Assembling the shader program (pipeline) with both shaders
-    pipeline = es.SimpleModelViewProjectionShaderProgram()
-    texture_pipeline = es.SimpleTextureModelViewProjectionShaderProgram()
+    # Assembling the shader program (pipeline) with all shaders
+    pipeline = es.SimpleModelViewProjectionShaderProgram()  # SIMPLE PIPELINE
+    texture_pipeline = es.SimpleTextureModelViewProjectionShaderProgram() # TEXTURE PIPELINE
+    lighting_pipeline = ls.SimpleTexturePhongShaderProgram() # LIGHTING PIPELINE
     
     # Telling OpenGL to use our shader program
     glUseProgram(pipeline.shaderProgram)
@@ -51,13 +53,10 @@ if __name__ == "__main__":
     # Using the same view and projection matrices in the whole application
     projection = tr.perspective(45, float(WIDTH)/float(HEIGHT), 0.1, 100)
 
-
-    floor = bs.createTextureCube('img/rainbow1.png')
-
-    GPUfloor = es.toGPUShape(floor, GL_REPEAT, GL_NEAREST)
-
-    snake = Snake(); ctrl.snake = snake
-    camera = Camera(); camera.snakeView = snake; ctrl.camera = camera
+    # MODELOS
+    floor = Floor()
+    snake = Snake(); ctrl.snake = snake.snake_parts[0]
+    camera = Camera(); camera.snakeView = snake.snake_parts[0]; ctrl.camera = camera
 
     limitFPS = 1.0 / 30.0
 
@@ -74,7 +73,6 @@ if __name__ == "__main__":
         # Using GLFW to check for input events
         glfw.poll_events()
     
-    
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -84,25 +82,26 @@ if __name__ == "__main__":
         lastTime = nowTime
 
         while deltaTime >= 1.0:
-            snake.update()
+            snake.snake_parts[0].update()
             snake.move()
+            snake.snake_parts[0].move()
             updates += 1     
             deltaTime -= 1.0
 
 
         view = camera.view()
-        
-        # FLOOR
-        glUseProgram(texture_pipeline.shaderProgram)
-        floor_transform = tr.matmul([tr.translate(0,0,-10),tr.scale(20,20,1),tr.uniformScale(1)])
-        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, floor_transform)
-        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
 
-        texture_pipeline.drawShape(GPUfloor)
+        glUseProgram(lighting_pipeline.shaderProgram)
+        floor.draw(lighting_pipeline, projection, view) 
+        snake.draw(lighting_pipeline, projection, view)
         
-        snake.draw(texture_pipeline, projection, view)
-
+        # sGPU = es.toGPUShape(bs.createTextureCube('img/background_tile.png'), GL_REPEAT, GL_NEAREST)
+        # stransform = tr.matmul([tr.translate(0.0,0.0,-8.5),tr.scale(1,1,2),tr.uniformScale(1)])
+        # glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, stransform)
+        # glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        # glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        # texture_pipeline.drawShape(sGPU)
+    
         frames += 1
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
@@ -116,3 +115,7 @@ if __name__ == "__main__":
 
     
     glfw.terminate()
+
+
+if __name__ == "__main__":
+    vista()
