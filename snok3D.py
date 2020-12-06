@@ -13,8 +13,8 @@ import lib.easy_shaders as es
 import lib.basic_shapes as bs
 
 from controller import Controller
-from models.list import Camera, Floor
-from models.snake import *
+from models.list import Snake, Camera, Floor
+# from models.snake import *
 
 
 
