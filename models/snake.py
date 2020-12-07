@@ -43,8 +43,11 @@ class Head():
         self.bend = 0.10
         self.front = 0.25
         self.turn = 0
-        self.GPU = es.toGPUShape(bs.createTextureNormalsCube('img/guy_a.png'), GL_REPEAT, GL_NEAREST)
-        self.transform = tr.matmul([tr.translate(0.0,0.0,-7.0),tr.scale(1,1,2),tr.uniformScale(1.5),tr.rotationZ(self.theta)])
+
+        obj = "objects/dummy.obj"
+        headOBJ = obj_reader.readOBJ2(f'{obj}',"img/background_tile.png")
+        self.GPU = es.toGPUShape(headOBJ, GL_REPEAT, GL_NEAREST)
+        self.transform = tr.matmul([tr.translate(0.0,0.0,-7.0),tr.uniformScale(1),tr.rotationZ(self.theta)])
     
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
@@ -74,7 +77,7 @@ class Head():
     def move(self):
         self.x += self.front*np.cos(self.theta)
         self.y += self.front*np.sin(self.theta)
-        self.transform = tr.matmul([tr.translate(self.x,self.y,-7.0),tr.scale(1,1,2),tr.uniformScale(1.5),tr.rotationZ(self.theta)])
+        self.transform = tr.matmul([tr.translate(self.x,self.y,-7.0),tr.uniformScale(1),tr.rotationZ(self.theta)])
         
     def update(self):
         self.theta += self.bend*self.turn
@@ -86,8 +89,10 @@ class Body():
         self.ppos = [(None,None,None)]        
         self.theta = 0.0
         
-        self.GPU = (es.toGPUShape(bs.createTextureNormalsCube("img/guy_b.png"), GL_REPEAT, GL_LINEAR))
-        self.transform = tr.matmul([tr.translate(self.x, self.y, -7.0),tr.scale(1,1,2),tr.uniformScale(1.5),tr.rotationZ(self.theta)])
+        obj = "objects/dummy.obj"
+        headOBJ = obj_reader.readOBJ2(f'{obj}',"img/snake.png")
+        self.GPU = es.toGPUShape(headOBJ, GL_REPEAT, GL_NEAREST)
+        self.transform = tr.matmul([tr.translate(0.0,0.0,-7.0),tr.uniformScale(1),tr.rotationZ(self.theta)])
     
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
@@ -115,7 +120,7 @@ class Body():
         pipeline.drawShape(self.GPU)
 
     def move(self):
-        self.transform = tr.matmul([tr.translate(self.x,self.y,-7.0),tr.scale(1,1,2),tr.uniformScale(1.5),tr.rotationZ(self.theta)])
+        self.transform = tr.matmul([tr.translate(self.x,self.y,-7.0),tr.rotationZ(self.theta)])
         
 
 class Snake():
@@ -127,8 +132,8 @@ class Snake():
         for i in range(self.initial_size-1):
             self.snake_parts.append(Body())
         for i in range(1,self.initial_size):
-            self.snake_parts[i].x += -1.5*i
-            self.snake_parts[i].ppos = [(j,0,0) for j in np.arange(self.snake_parts[i].x,self.snake_parts[i-1].x,0.25)]
+            self.snake_parts[i].x += -0.5*i
+            self.snake_parts[i].ppos = [(j,0,0) for j in np.arange(self.snake_parts[i].x,self.snake_parts[i-1].x,0.1)]
             self.snake_parts[i].move()
             
 

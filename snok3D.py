@@ -14,7 +14,7 @@ import lib.basic_shapes as bs
 
 from controller import Controller
 from models.list import Snake, Camera, Floor
-# from models.snake import *
+from models.snake import *
 
 
 
@@ -95,12 +95,6 @@ def vista():
         floor.draw(lighting_pipeline, projection, view) 
         snake.draw(lighting_pipeline, projection, view)
         
-        # sGPU = es.toGPUShape(bs.createTextureCube('img/background_tile.png'), GL_REPEAT, GL_NEAREST)
-        # stransform = tr.matmul([tr.translate(0.0,0.0,-8.5),tr.scale(1,1,2),tr.uniformScale(1)])
-        # glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, stransform)
-        # glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-        # glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
-        # texture_pipeline.drawShape(sGPU)
     
         frames += 1
 
