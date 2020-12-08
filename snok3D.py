@@ -56,8 +56,8 @@ def vista():
     # MODELOS
     floor = Floor()
     vinyl = Vinyl()
-    snake = Snake(); ctrl.snake = snake.snake_parts[0]; snake.objective = vinyl
-    camera = Camera(); camera.snakeView = snake.snake_parts[0]; ctrl.camera = camera
+    snake = Snake(); ctrl.snake = snake.head; snake.objective = vinyl
+    camera = Camera(); camera.snakeView = snake.head; ctrl.camera = camera
 
     wall = bs.createTextureCube('img/clouds.png')
     GPUwall = es.toGPUShape(wall, GL_REPEAT, GL_NEAREST)
@@ -95,10 +95,10 @@ def vista():
             vinyl.spawn()
 
         while deltaTime >= 1.0:
-            snake.snake_parts[0].update()
+            snake.head.update()
             vinyl.update()
             snake.move()
-            snake.snake_parts[0].move()
+            snake.collisions()
             updates += 1     
             deltaTime -= 1.0
 
