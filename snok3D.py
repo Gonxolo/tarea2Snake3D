@@ -13,8 +13,7 @@ import lib.easy_shaders as es
 import lib.basic_shapes as bs
 
 from controller import Controller
-from models.list import Snake, Camera, Floor
-from models.snake import *
+from models.list import Snake, Camera, Floor, Vinyl
 
 
 
@@ -38,6 +37,7 @@ def vista():
     pipeline = es.SimpleModelViewProjectionShaderProgram()  # SIMPLE PIPELINE
     texture_pipeline = es.SimpleTextureModelViewProjectionShaderProgram() # TEXTURE PIPELINE
     lighting_pipeline = ls.SimpleTexturePhongShaderProgram() # LIGHTING PIPELINE
+    phong_pipeline = ls.SimplePhongShaderProgram() # PHONG PIPELINE
     
     # Telling OpenGL to use our shader program
     glUseProgram(pipeline.shaderProgram)
@@ -55,8 +55,16 @@ def vista():
 
     # MODELOS
     floor = Floor()
-    snake = Snake(); ctrl.snake = snake.snake_parts[0]
+    vinyl = Vinyl()
+    snake = Snake(); ctrl.snake = snake.snake_parts[0]; snake.objective = vinyl
     camera = Camera(); camera.snakeView = snake.snake_parts[0]; ctrl.camera = camera
+
+    wall = bs.createTextureCube('img/clouds.png')
+    GPUwall = es.toGPUShape(wall, GL_REPEAT, GL_NEAREST)
+    wallTransform = tr.matmul([tr.translate(0,0,0),tr.uniformScale(50),tr.uniformScale(1)])
+    bottom = bs.createColorCube(0.0,0.0,0.0)
+    GPUbottom = es.toGPUShape(bottom, GL_REPEAT, GL_NEAREST)
+    bottomTransform = tr.matmul([tr.translate(0,0,-22),tr.scale(49.9, 49.9, 1),tr.uniformScale(1)])
 
     limitFPS = 1.0 / 30.0
 
@@ -68,6 +76,8 @@ def vista():
     
     frames = 0
     updates = 0
+
+    
 
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
@@ -81,8 +91,12 @@ def vista():
         deltaTime += (nowTime - lastTime) / limitFPS
         lastTime = nowTime
 
+        if not vinyl.exists:
+            vinyl.spawn()
+
         while deltaTime >= 1.0:
             snake.snake_parts[0].update()
+            vinyl.update()
             snake.move()
             snake.snake_parts[0].move()
             updates += 1     
@@ -91,9 +105,26 @@ def vista():
 
         view = camera.view()
 
+        glUseProgram(texture_pipeline.shaderProgram)
+        
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, wallTransform)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        texture_pipeline.drawShape(GPUwall)
+
+
+        glUseProgram(pipeline.shaderProgram)
+        
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, bottomTransform)
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        pipeline.drawShape(GPUbottom)
+
+
         glUseProgram(lighting_pipeline.shaderProgram)
         floor.draw(lighting_pipeline, projection, view) 
         snake.draw(lighting_pipeline, projection, view)
+        vinyl.draw(phong_pipeline, projection, view)
         
     
         frames += 1
