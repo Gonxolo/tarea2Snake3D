@@ -6,12 +6,14 @@ import lib.easy_shaders as es
 import lib.transformations as tr
 import lib.obj_handler as obj_reader
 
+from collections import deque
+
 
 class Head():
     
     def __init__(self):
         self.x, self.y, self.z = 0.0, 0.0, -9.5
-        self.ppos = []
+        # self.ppos = []
         self.theta = 0.0
         self.bend = 0.10
         self.front = 0.25
@@ -69,7 +71,7 @@ class Body():
     
     def __init__(self):
         self.x, self.y, self.z = 0.0, 0.0, -9.5
-        self.ppos = [(None,None,None)]        
+        # self.ppos = [(None,None,None)]        
         self.theta = 0.0
         
         obj = "objects/dummy.obj"
@@ -111,12 +113,15 @@ class Snake():
     def __init__(self):
         self.alive = True
         self.snake_parts = [Head()]
+        self.positions = deque([])
         self.initial_size = 5
+        self.hack = self.initial_size+1
         for i in range(self.initial_size-1):
             self.snake_parts.append(Body())
         for i in range(1,self.initial_size):
-            self.snake_parts[i].x += -0.9*i
-            self.snake_parts[i].ppos = [(j,0,0) for j in np.arange(self.snake_parts[i].x,self.snake_parts[i-1].x,0.1)]
+            self.snake_parts[i].x += -1.0*i
+            for j in np.arange(self.snake_parts[i].x,self.snake_parts[i-1].x,0.1):
+                self.positions.appendleft((j,0,0))
             self.snake_parts[i].move()
             
 
@@ -129,40 +134,37 @@ class Snake():
 
 
     def growth(self):
-        print("+1")
-        # new_part = Body()
-        # new_part.x = self.snake_parts[-1].x
-        # new_part.y = self.snake_parts[-1].y
-        # new_part.parts = self.snake_parts[-1].theta
-        # new_part.move()
-        # self.snake_parts.append(new_part)
+        new_part = Body()
+        self.snake_parts.append(new_part)
+        self.snake_parts[-1].x, self.snake_parts[-1].y, self.snake_parts[-1].theta = self.positions[-10*(len(self.snake_parts)-1)]
+        self.snake_parts[-1].move()
+        
 
 
     def collisions(self):
         x, y = self.snake_parts[0].x, self.snake_parts[0].y
 
-        if (x-self.objective.x)**2 + (y-self.objective.y)**2 < 1.0:
+        if (x-self.objective.x)**2 + (y-self.objective.y)**2 < 0.1:
             self.objective.exists = False
             self.growth()
 
         # if x**2 > 100 or y**2 > 100:
         #     self.alive = False
         
-        for i in range(1,len(self.snake_parts)):
-            if (x - self.snake_parts[i].x)**2 + (y - self.snake_parts[i].y)**2 < 0.5:
-                self.alive = False
+        # for i in range(1,len(self.snake_parts)):
+        #     if (x - self.snake_parts[i].x)**2 + (y - self.snake_parts[i].y)**2 < 0.25:
+        #         self.alive = False
         
 
     def move(self):
         if not self.alive:
             return
-
+        self.snake_parts[0].update()
         for i in range(1,len(self.snake_parts)):
-            self.snake_parts[i].x, self.snake_parts[i].y, self.snake_parts[i].theta = self.snake_parts[i].ppos[0]
-            self.snake_parts[i].ppos.pop(0)
-            self.snake_parts[i].ppos.append((self.snake_parts[i-1].x, self.snake_parts[i-1].y, self.snake_parts[i-1].theta))
+            self.snake_parts[i].x, self.snake_parts[i].y, self.snake_parts[i].theta = self.positions[i*-10]
             self.snake_parts[i].move()
-        
+        self.snake_parts[0].move()
+        self.positions.append((self.snake_parts[0].x,self.snake_parts[0].y,self.snake_parts[0].theta))
         self.collisions()
 
         

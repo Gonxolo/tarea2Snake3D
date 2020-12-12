@@ -95,10 +95,9 @@ def vista():
             vinyl.spawn()
 
         while deltaTime >= 1.0:
-            snake.snake_parts[0].update()
             vinyl.update()
-            snake.move()
-            snake.snake_parts[0].move()
+            if timer > 7.0:
+                snake.move()
             updates += 1     
             deltaTime -= 1.0
 

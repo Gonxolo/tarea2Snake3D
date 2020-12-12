@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from OpenGL.GL import *
 
 import lib.basic_shapes as bs
@@ -17,8 +18,8 @@ class Vinyl():
 
     def spawn(self):
         self.exists = True
-        self.x = np.random.randint(-8,9)*np.random.random_sample()
-        self.y = np.random.randint(-8,9)*np.random.random_sample()
+        self.x = random.uniform(-8,8)
+        self.y = random.uniform(-8,8)
 
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
