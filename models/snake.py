@@ -11,17 +11,17 @@ class Head():
     
     def __init__(self):
         self.x, self.y, self.z = 0.0, 0.0, -9.5
-        self.ppos = []
-        self.theta = 0.0
-        self.bend = 0.10
-        self.front = 0.25
-        self.turn = 0
+        self.theta0 = 0.0 #THETA
+        self.theta1 = 0.0
+        self.bend = 0.3
+        self.front = 0.25 #RHO
+        self.turn = 0 
         self.objective = None
 
         obj = "objects/dummy.obj"
         headOBJ = obj_reader.readOBJ2(f'{obj}',"objects/textures/test2.png")
         self.GPU = es.toGPUShape(headOBJ, GL_REPEAT, GL_NEAREST)
-        self.transform = tr.matmul([tr.translate(0.0,0.0,-9.5),tr.uniformScale(1),tr.rotationZ(self.theta)])
+        self.transform = tr.matmul([tr.translate(0.0,0.0,-9.5),tr.uniformScale(1),tr.rotationZ(self.theta0)])
     
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
@@ -58,24 +58,27 @@ class Head():
         pipeline.drawShape(self.GPU)
 
     def move(self):
-        self.x += self.front*np.cos(self.theta)
-        self.y += self.front*np.sin(self.theta)
-        self.transform = tr.matmul([tr.translate(self.x,self.y,-9.5),tr.uniformScale(1),tr.rotationZ(self.theta)])
+        self.x += self.front*np.cos(self.theta0)
+        self.y += self.front*np.sin(self.theta0)
+        self.transform = tr.matmul([tr.translate(self.x,self.y,-9.5),tr.uniformScale(1),tr.rotationZ(self.theta0)])
         
     def update(self):
-        self.theta += self.bend*self.turn
+        self.theta1 = self.theta0
+        self.theta0 += self.bend*self.turn
+        print(self.theta0, self.theta1)
 
 class Body():
     
     def __init__(self):
         self.x, self.y, self.z = 0.0, 0.0, -9.5
         self.ppos = [(None,None,None)]        
-        self.theta = 0.0
+        self.theta0 = 0.0
+        self.theta1 = 0.0
         
         obj = "objects/dummy.obj"
         headOBJ = obj_reader.readOBJ2(f'{obj}',"img/snake.png")
         self.GPU = es.toGPUShape(headOBJ, GL_REPEAT, GL_NEAREST)
-        self.transform = tr.matmul([tr.translate(0.0,0.0,-9.5),tr.uniformScale(1),tr.rotationZ(self.theta)])
+        self.transform = tr.matmul([tr.translate(0.0,0.0,-9.5),tr.uniformScale(1),tr.rotationZ(self.theta0)])
     
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
@@ -103,7 +106,7 @@ class Body():
         pipeline.drawShape(self.GPU)
 
     def move(self):
-        self.transform = tr.matmul([tr.translate(self.x,self.y,-9.5),tr.rotationZ(self.theta)])
+        self.transform = tr.matmul([tr.translate(self.x,self.y,-9.5),tr.rotationZ(self.theta0)])
         
 
 class Snake():
@@ -111,12 +114,11 @@ class Snake():
     def __init__(self):
         self.alive = True
         self.snake_parts = [Head()]
-        self.initial_size = 5
+        self.initial_size = 10
         for i in range(self.initial_size-1):
             self.snake_parts.append(Body())
         for i in range(1,self.initial_size):
-            self.snake_parts[i].x += -0.9*i
-            self.snake_parts[i].ppos = [(j,0,0) for j in np.arange(self.snake_parts[i].x,self.snake_parts[i-1].x,0.1)]
+            self.snake_parts[i].x += -0.5*i
             self.snake_parts[i].move()
             
 
@@ -149,7 +151,7 @@ class Snake():
         #     self.alive = False
         
         for i in range(1,len(self.snake_parts)):
-            if (x - self.snake_parts[i].x)**2 + (y - self.snake_parts[i].y)**2 < 0.5:
+            if (x - self.snake_parts[i].x)**2 + (y - self.snake_parts[i].y)**2 < 0.2:
                 self.alive = False
         
 
@@ -158,11 +160,12 @@ class Snake():
             return
 
         for i in range(1,len(self.snake_parts)):
-            self.snake_parts[i].x, self.snake_parts[i].y, self.snake_parts[i].theta = self.snake_parts[i].ppos[0]
-            self.snake_parts[i].ppos.pop(0)
-            self.snake_parts[i].ppos.append((self.snake_parts[i-1].x, self.snake_parts[i-1].y, self.snake_parts[i-1].theta))
+            self.snake_parts[i].theta1 = self.snake_parts[i].theta0
+            self.snake_parts[i].theta0 = self.snake_parts[i-1].theta1
+            self.snake_parts[i].x = self.snake_parts[i-1].x + 0.5*np.cos(self.snake_parts[i].theta0+np.pi)
+            self.snake_parts[i].y = self.snake_parts[i-1].y + 0.5*np.sin(self.snake_parts[i].theta0+np.pi)
             self.snake_parts[i].move()
         
-        self.collisions()
+        # self.collisions()
 
         

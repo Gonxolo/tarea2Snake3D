@@ -28,8 +28,8 @@ class Camera():
 
         elif self.headView:
             return tr.lookAt(
-                np.array([self.snakeView.x+np.cos(self.snakeView.theta)*-8, self.snakeView.y+np.sin(self.snakeView.theta)*-8,-6]),   # eye
-                np.array([self.snakeView.x+np.cos(self.snakeView.theta), self.snakeView.y+np.sin(self.snakeView.theta),-7]),  # at
+                np.array([self.snakeView.x+np.cos(self.snakeView.theta0)*-8, self.snakeView.y+np.sin(self.snakeView.theta0)*-8,-6]),   # eye
+                np.array([self.snakeView.x+np.cos(self.snakeView.theta0), self.snakeView.y+np.sin(self.snakeView.theta0),-7]),  # at
                 np.array([0,0,1])                                        # up
             )
         
