@@ -13,7 +13,7 @@ import lib.easy_shaders as es
 import lib.basic_shapes as bs
 
 from controller import Controller
-from models.list import Snake, Camera, Floor, Vinyl
+from models.list import Snake, Camera, Floor, Vinyl, Screens
 
 
 
@@ -57,6 +57,7 @@ def vista():
     floor = Floor()
     vinyl = Vinyl()
     snake = Snake(); ctrl.snake = snake.snake_parts[0]; snake.objective = vinyl
+    screens = Screens()
     camera = Camera(); camera.snakeView = snake.snake_parts[0]; ctrl.camera = camera
 
     wall = bs.createTextureCube('img/clouds.png')
@@ -91,18 +92,23 @@ def vista():
         deltaTime += (nowTime - lastTime) / limitFPS
         lastTime = nowTime
 
+        view = camera.view()
+
+        # Main Menu
+        if not ctrl.gameStart:
+            screens.mainMenu(texture_pipeline,projection,view)
+            # screens.gameOver(texture_pipeline,projection,view)
+            glfw.swap_buffers(window)
+            continue
+
         if not vinyl.exists:
             vinyl.spawn()
 
         while deltaTime >= 1.0:
             vinyl.update()
-            if timer > 7.0:
-                snake.move()
+            snake.move()
             updates += 1     
             deltaTime -= 1.0
-
-
-        view = camera.view()
 
         glUseProgram(texture_pipeline.shaderProgram)
         

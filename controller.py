@@ -9,11 +9,15 @@ class Controller:
     def __init__(self):
         self.snake = None
         self.camera = None
+        self.gameStart = False
 
     def on_key(self, window, key, scancode, action, mods):
 
         if not (action == glfw.REPEAT or action == glfw.PRESS or action == glfw.RELEASE):
             return
+
+        if key == glfw.KEY_SPACE:
+            self.gameStart = True
 
         if key == glfw.KEY_ESCAPE:
             sys.exit()
