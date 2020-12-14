@@ -99,8 +99,9 @@ class Snake():
     def __init__(self):
         self.alive = True
         self.objective = None
+        self.floor = None
         self.snake_parts = [Head()]
-        self.bodyTypeList = [0,1,2,3,4]
+        self.bodyTypeList = [1,0,2,3,4]
         obj = "objects/dummy.obj"
         bodyOBJ1 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeBlack.png")
         bodyOBJ2 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeRed.png")
@@ -156,17 +157,18 @@ class Snake():
         x, y = self.snake_parts[0].x, self.snake_parts[0].y
 
         if (x-self.objective.x)**2 + (y-self.objective.y)**2 < 1.0:
+            if self.objective.rare%5 == 4:
+                self.floor.weirdTimer += 200
             self.objective.exists = False
+            self.objective.rare += 1
             self.growth()
 
         if x**2 > 100 or y**2 > 100:
             self.alive = False
-            print("d'oh")
 
         for i in range(1,len(self.snake_parts)):
             if (x - self.snake_parts[i].x)**2 + (y - self.snake_parts[i].y)**2 < 0.09:
                 self.alive = False
-                print("d'oh")
 
 
     def move(self):
@@ -178,5 +180,7 @@ class Snake():
         self.snake_parts[0].update()
         self.snake_parts[0].move()
         self.positions.append((self.snake_parts[0].x,self.snake_parts[0].y,self.snake_parts[0].theta))
+        while len(self.positions) > self.length * 10:
+            self.positions.popleft()
         
         

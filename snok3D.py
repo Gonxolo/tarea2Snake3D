@@ -56,7 +56,7 @@ def vista():
     # MODELOS
     floor = Floor()
     vinyl = Vinyl()
-    snake = Snake(); ctrl.snake = snake.snake_parts[0]; snake.objective = vinyl
+    snake = Snake(); ctrl.snake = snake.snake_parts[0]; snake.objective = vinyl; snake.floor = floor; vinyl.bans = snake.positions
     screens = Screens()
     camera = Camera(); camera.snakeView = snake.snake_parts[0]; ctrl.camera = camera
 
@@ -107,7 +107,6 @@ def vista():
             texture_pipeline.drawShape(GPUwall)
 
             screens.mainMenu(lighting_pipeline,projection,view)
-            # screens.gameOver(lighting_pipeline,projection,view)
             glfw.swap_buffers(window)
             continue
         elif ctrl.gameStart and lastTime == 0:
@@ -129,7 +128,6 @@ def vista():
             glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
             texture_pipeline.drawShape(GPUwall)
 
-            # screens.mainMenu(lighting_pipeline,projection,view)
             screens.gameOver(lighting_pipeline,projection,view)
             glfw.swap_buffers(window)
             continue
@@ -145,6 +143,13 @@ def vista():
         while deltaTime >= 1.0:
             vinyl.update()
             snake.move()
+            floor.timer += 1
+            if floor.timer%20 == 0:
+                floor.floorPicker += 1
+            if floor.weirdTimer > 0:
+                if floor.weirdTimer%10 == 0:
+                    floor.update()
+                floor.weirdTimer -= 1
             updates += 1     
             deltaTime -= 1.0
 

@@ -13,26 +13,50 @@ class Vinyl():
         self.x, self.y, self.z = 0.0, 0.0, -4.5
         self.exists = False
         self.theta = 0.0
+        self.rare = 0
+        self.bans = [(None,None,None)]
         self.GPU = es.toGPUShape(obj_reader.readOBJ('objects/record.obj', (1.0,1.0,1.0)), GL_REPEAT, GL_NEAREST)
         self.transform = tr.matmul([tr.translate(0.0,0.0,self.z),tr.uniformScale(1),tr.rotationZ(self.theta),tr.rotationX(np.pi/4)])
 
     def spawn(self):
-        self.exists = True
         self.x = random.uniform(-8,8)
         self.y = random.uniform(-8,8)
+        while not self.posChecker():
+            self.x = random.uniform(-8,8)
+            self.y = random.uniform(-8,8)
+            self.posChecker()
+        self.exists = True
+        
+    def posChecker(self):
+        for pos in self.bans:
+            if (pos[0]-self.x)**2 < 1.0:
+                if (pos[1]-self.y)**2 < 1.0:
+                    return False
+        return True        
 
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
 
-        # White light in all components: ambient, diffuse and specular.
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 0.55, 0.55, 0.55)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.65, 0.65, 0.65)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 0.4, 0.4, 0.4)
+        if self.rare%5 == 4:
+            # White light in all components: ambient, diffuse and specular.
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 1.0, 215/255, 0.0)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.0, 0.0, 0.0)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 1.0, 1.0, 1.0)
 
-        # Object is barely visible at only ambient. Bright white for diffuse and specular components.
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ka"), 0.25, 0.25, 0.25)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 0.6, 0.6, 0.6)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0.6, 0.6, 0.6)
+            # Object is barely visible at only ambient. Bright white for diffuse and specular components.
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ka"), 1.0, 1.0, 1.0)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 0.6, 0.6, 0.6)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0.6, 0.6, 0.6)
+        else:
+            # White light in all components: ambient, diffuse and specular.
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 0.0, 0.0, 0.0)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.01, 0.01, 0.01)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 0.0, 0.0, 0.0)
+
+            # Object is barely visible at only ambient. Bright white for diffuse and specular components.
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ka"), 0.0, 0.0, 0.0)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 1.0, 1.0, 1.0)
+            glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0.0, 0.0, 0.0)
 
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "lightPosition"), 0, 0, 50)
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "viewPosition"), self.x, self.y, self.z)
