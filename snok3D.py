@@ -109,7 +109,7 @@ def vista():
             glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
             texture_pipeline.drawShape(GPUwall)
 
-            screens.mainMenu(lighting_pipeline,projection,view)
+            screens.mainMenu(lighting_pipeline,projection,view,phong_pipeline)
             glfw.swap_buffers(window)
             continue
         elif ctrl.gameStart and lastTime == 0:
@@ -152,7 +152,12 @@ def vista():
             if floor.weirdTimer > 0:
                 if floor.weirdTimer%10 == 0:
                     floor.update()
+                    snake.weirdLight = (floor.r, floor.g, floor.b)
+                    snake.lightChange()
                 floor.weirdTimer -= 1
+                if floor.weirdTimer == 0:
+                    snake.weirdLight = (1.0, 1.0, 1.0)
+                    snake.lightChange()
             updates += 1     
             deltaTime -= 1.0
 
