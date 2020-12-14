@@ -10,7 +10,7 @@ import lib.obj_handler as obj_reader
 
 class Vinyl():
     def __init__(self):
-        self.x, self.y, self.z = 0.0, 0.0, -8.5
+        self.x, self.y, self.z = 0.0, 0.0, -4.5
         self.exists = False
         self.theta = 0.0
         self.GPU = es.toGPUShape(obj_reader.readOBJ('objects/record.obj', (1.0,1.0,1.0)), GL_REPEAT, GL_NEAREST)

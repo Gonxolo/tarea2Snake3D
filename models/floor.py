@@ -10,8 +10,8 @@ import lib.transformations as tr
 class Floor():
 
     def __init__(self):
-        self.GPUfloor = es.toGPUShape(bs.createTextureNormalsCube('img/background_tile.png'), GL_REPEAT, GL_NEAREST)
-        self.transform = tr.matmul([tr.translate(0,0,-10),tr.scale(20,20,1),tr.uniformScale(1)])
+        self.GPUfloor = es.toGPUShape(bs.createTextureNormalsCube('img/rainbow1.png'), GL_REPEAT, GL_NEAREST)
+        self.transform = tr.matmul([tr.translate(0,0,-5),tr.scale(20,20,0.001),tr.uniformScale(1)])
     
     def draw(self, pipeline, projection, view):             
 

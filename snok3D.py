@@ -43,7 +43,7 @@ def vista():
     glUseProgram(pipeline.shaderProgram)
 
     # Setting up the clear screen color
-    glClearColor(0.85, 0.85, 0.85, 1.0)
+    glClearColor(0.0, 0.0, 0.0, 1.0)
 
     # As we work in 3D, we need to check which part is in front,
     # and which one is at the back
@@ -63,6 +63,9 @@ def vista():
     wall = bs.createTextureCube('img/clouds.png')
     GPUwall = es.toGPUShape(wall, GL_REPEAT, GL_NEAREST)
     wallTransform = tr.matmul([tr.translate(0,0,0),tr.uniformScale(50),tr.uniformScale(1)])
+    building = bs.createTextureCube('img/building.png')
+    GPUbuilding = es.toGPUShape(building, GL_REPEAT, GL_NEAREST)
+    buildingTransform = tr.matmul([tr.translate(0,0,-10.01),tr.scale(20,20,10),tr.uniformScale(1)])
     bottom = bs.createColorCube(0.0,0.0,0.0)
     GPUbottom = es.toGPUShape(bottom, GL_REPEAT, GL_NEAREST)
     bottomTransform = tr.matmul([tr.translate(0,0,-22),tr.scale(49.9, 49.9, 1),tr.uniformScale(1)])
@@ -87,19 +90,54 @@ def vista():
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+
+        # Main Menu
+        if not ctrl.gameStart:
+            view = tr.lookAt(
+                np.array([0,0,20]),     # eye
+                np.array([0.0001,0,0]), # at
+                np.array([0,0,1])       # up
+            )
+            
+            glUseProgram(texture_pipeline.shaderProgram)
+            wallTransform0 = tr.matmul([tr.translate(0,0,0),tr.scale(22,22,0.001),tr.uniformScale(1),tr.rotationZ(3*np.pi/2)])
+            glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, wallTransform0)
+            glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+            glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+            texture_pipeline.drawShape(GPUwall)
+
+            screens.mainMenu(lighting_pipeline,projection,view)
+            # screens.gameOver(lighting_pipeline,projection,view)
+            glfw.swap_buffers(window)
+            continue
+        elif ctrl.gameStart and lastTime == 0:
+            lastTime = glfw.get_time()
+            timer = lastTime
+
+        # GAME OVER
+        if not snake.alive:
+            view = tr.lookAt(
+                np.array([0,0,20]),     # eye
+                np.array([0.0001,0,0]), # at
+                np.array([0,0,1])       # up
+            )
+            
+            glUseProgram(texture_pipeline.shaderProgram)
+            wallTransform0 = tr.matmul([tr.translate(0,0,0),tr.scale(22,22,0.001),tr.uniformScale(1),tr.rotationZ(3*np.pi/2)])
+            glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, wallTransform0)
+            glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+            glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+            texture_pipeline.drawShape(GPUwall)
+
+            # screens.mainMenu(lighting_pipeline,projection,view)
+            screens.gameOver(lighting_pipeline,projection,view)
+            glfw.swap_buffers(window)
+            continue
+
         # Calculamos el dt
         nowTime = glfw.get_time()
         deltaTime += (nowTime - lastTime) / limitFPS
         lastTime = nowTime
-
-        view = camera.view()
-
-        # Main Menu
-        if not ctrl.gameStart:
-            screens.mainMenu(texture_pipeline,projection,view)
-            # screens.gameOver(texture_pipeline,projection,view)
-            glfw.swap_buffers(window)
-            continue
 
         if not vinyl.exists:
             vinyl.spawn()
@@ -110,12 +148,25 @@ def vista():
             updates += 1     
             deltaTime -= 1.0
 
+        view = camera.view()
+
+        if timer > 2.0:
+            snake.collisions()
+
         glUseProgram(texture_pipeline.shaderProgram)
         
         glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, wallTransform)
         glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
         glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
         texture_pipeline.drawShape(GPUwall)
+        
+        
+        glUseProgram(texture_pipeline.shaderProgram)
+        
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, buildingTransform)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        texture_pipeline.drawShape(GPUbuilding)
 
 
         glUseProgram(pipeline.shaderProgram)
