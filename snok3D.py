@@ -27,7 +27,7 @@ def vista():
 
     WIDTH = 1000; HEIGHT = 800
 
-    window = glfw.create_window(WIDTH, HEIGHT, "Sphere", None, None)
+    window = glfw.create_window(WIDTH, HEIGHT, "DISCO SNOK! 3D", None, None)
 
     if not window: glfw.terminate(); sys.exit()
 
