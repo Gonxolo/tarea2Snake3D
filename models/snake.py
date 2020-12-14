@@ -19,6 +19,7 @@ class Head():
         self.bend = 0.20
         self.front = 0.20
         self.turn = 0
+        self.weirdLight = (1.0, 1.0, 1.0)
 
         obj = os.path.join("objects","dummy.obj")
         headOBJ = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeRed.png"))
@@ -28,15 +29,13 @@ class Head():
     def draw(self, objeto, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
 
-        # White light in all components: ambient, diffuse and specular.
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 0.55, 0.55, 0.55)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.65, 0.65, 0.65)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 0.4, 0.4, 0.4)
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 0.25*self.weirdLight[0], 0.25*self.weirdLight[1], 0.25*self.weirdLight[2])
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.65*self.weirdLight[0], 0.65*self.weirdLight[1], 0.65*self.weirdLight[2])
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 0.1*self.weirdLight[0], 0.1*self.weirdLight[1], 0.1*self.weirdLight[2])
 
-        # Setting material composition
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ka"), 0.25, 0.25, 0.25)
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 0.6, 0.6, 0.6)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0.6, 0.6, 0.6)
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 1.0, 1.0, 1.0)
 
 
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "lightPosition"), 0, 0, 50)
@@ -66,23 +65,22 @@ class Body():
         self.x, self.y, self.z = 0.0, 0.0, -4.5
         self.theta = 0.0
         self.transform = tr.matmul([tr.translate(self.x,self.y,self.z),tr.uniformScale(0.5),tr.rotationZ(self.theta)])
+        self.weirdLight = (1.0, 1.0, 1.0)
     
     def draw(self, objeto, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
 
-        # White light in all components: ambient, diffuse and specular.
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 0.55, 0.55, 0.55)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.65, 0.65, 0.65)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 0.4, 0.4, 0.4)
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 0.25*self.weirdLight[0], 0.25*self.weirdLight[1], 0.25*self.weirdLight[2])
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.65*self.weirdLight[0], 0.65*self.weirdLight[1], 0.65*self.weirdLight[2])
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 0.1*self.weirdLight[0], 0.1*self.weirdLight[1], 0.1*self.weirdLight[2])
 
-        # Object is barely visible at only ambient. Bright white for diffuse and specular components.
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ka"), 0.25, 0.25, 0.25)
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 0.6, 0.6, 0.6)
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0.6, 0.6, 0.6)
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 1.0, 1.0, 1.0)
 
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "lightPosition"), 50,50 ,50)
+        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "lightPosition"), 0, 0, 50)
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "viewPosition"), self.x, self.y, self.z)
-        glUniform1ui(glGetUniformLocation(pipeline.shaderProgram, "shininess"), 100000)
+        glUniform1ui(glGetUniformLocation(pipeline.shaderProgram, "shininess"), 100)
         glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "constantAttenuation"), 0.001)
         glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "linearAttenuation"), 0.0001)
         glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "quadraticAttenuation"), 0.0001)
@@ -104,6 +102,7 @@ class Snake():
         self.floor = None
         self.snake_parts = [Head()]
         self.bodyTypeList = [1,0,2,3,4]
+        self.weirdLight = (1.0, 1.0, 1.0)
         obj = os.path.join("objects","dummy.obj")
         bodyOBJ1 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeBlack.png"))
         bodyOBJ2 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeRed.png"))
@@ -127,7 +126,9 @@ class Snake():
                 self.positions.appendleft((j,0,0))
             self.snake_parts[i].move()
             
-
+    def lightChange(self):
+        for part in self.snake_parts:
+            part.weirdLight = self.weirdLight
     
     def draw(self, pipeline, projection, view):
         if not self.alive:
