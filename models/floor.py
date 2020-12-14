@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from OpenGL.GL import *
 
@@ -10,11 +12,11 @@ import lib.transformations as tr
 class Floor():
 
     def __init__(self):
-        self.GPUfloor1 = es.toGPUShape(bs.createTextureNormalsCube('img/rainbow1.png'), GL_REPEAT, GL_NEAREST)
-        self.GPUfloor2 = es.toGPUShape(bs.createTextureNormalsCube('img/rainbow2.png'), GL_REPEAT, GL_NEAREST)
-        self.GPUfloor3 = es.toGPUShape(bs.createTextureNormalsCube('img/rainbow3.png'), GL_REPEAT, GL_NEAREST)
-        self.GPUfloor4 = es.toGPUShape(bs.createTextureNormalsCube('img/rainbow4.png'), GL_REPEAT, GL_NEAREST)
-        self.GPUfloor5 = es.toGPUShape(bs.createTextureNormalsCube('img/rainbow5.png'), GL_REPEAT, GL_NEAREST)
+        self.GPUfloor1 = es.toGPUShape(bs.createTextureNormalsCube(os.path.join("img","rainbow1.png")), GL_REPEAT, GL_NEAREST)
+        self.GPUfloor2 = es.toGPUShape(bs.createTextureNormalsCube(os.path.join("img","rainbow2.png")), GL_REPEAT, GL_NEAREST)
+        self.GPUfloor3 = es.toGPUShape(bs.createTextureNormalsCube(os.path.join("img","rainbow3.png")), GL_REPEAT, GL_NEAREST)
+        self.GPUfloor4 = es.toGPUShape(bs.createTextureNormalsCube(os.path.join("img","rainbow4.png")), GL_REPEAT, GL_NEAREST)
+        self.GPUfloor5 = es.toGPUShape(bs.createTextureNormalsCube(os.path.join("img","rainbow5.png")), GL_REPEAT, GL_NEAREST)
         self.transform = tr.matmul([tr.translate(0,0,-5),tr.scale(20,20,0.001),tr.uniformScale(1)])
         self.r, self.g, self.b = np.random.random_sample(), np.random.random_sample(), np.random.random_sample()
         self.weirdTimer = 0

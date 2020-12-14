@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import random
 from OpenGL.GL import *
@@ -15,7 +17,7 @@ class Vinyl():
         self.theta = 0.0
         self.rare = 0
         self.bans = [(None,None,None)]
-        self.GPU = es.toGPUShape(obj_reader.readOBJ('objects/record.obj', (1.0,1.0,1.0)), GL_REPEAT, GL_NEAREST)
+        self.GPU = es.toGPUShape(obj_reader.readOBJ(os.path.join("objects","record.obj"), (1.0,1.0,1.0)), GL_REPEAT, GL_NEAREST)
         self.transform = tr.matmul([tr.translate(0.0,0.0,self.z),tr.uniformScale(1),tr.rotationZ(self.theta),tr.rotationX(np.pi/4)])
 
     def spawn(self):

@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import random
 from OpenGL.GL import *
@@ -14,10 +16,8 @@ class Screens(object):
         self.d = 0
         self.go = True
         self.do = True
-        self.GPUmenu = es.toGPUShape(obj_reader.readOBJ2("objects/snok.obj","objects/textures/text.png"), GL_REPEAT, GL_NEAREST)
-        self.GPUover = es.toGPUShape(obj_reader.readOBJ2("objects/gameover.obj","objects/textures/text.png"), GL_REPEAT, GL_NEAREST)
-        # self.GPUmenu = es.toGPUShape(obj_reader.readOBJ("objects/snok.obj",(0.1,0.1,0.1)), GL_REPEAT, GL_NEAREST)
-        # self.GPUover = es.toGPUShape(obj_reader.readOBJ("objects/snok.obj",(0.1,0.1,0.1)), GL_REPEAT, GL_NEAREST)
+        self.GPUmenu = es.toGPUShape(obj_reader.readOBJ2(os.path.join("objects","snok.obj"),os.path.join("objects","textures","text.png")), GL_REPEAT, GL_NEAREST)
+        self.GPUover = es.toGPUShape(obj_reader.readOBJ2(os.path.join("objects","gameover.obj"),os.path.join("objects","textures","text.png")), GL_REPEAT, GL_NEAREST)
         self.menuTransform = tr.matmul([tr.translate(-0.3,4.0,8.0),tr.uniformScale(2),tr.rotationX(np.pi/2),tr.rotationY(3*np.pi/2)])
         self.overTransform = tr.matmul([tr.translate(0.3,3.0,8.0),tr.uniformScale(2),tr.rotationX(np.pi/2),tr.rotationY(3*np.pi/2)])
 

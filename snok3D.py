@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import os
 import sys
 
 import glfw
@@ -14,6 +15,8 @@ import lib.basic_shapes as bs
 
 from controller import Controller
 from models.list import Snake, Camera, Floor, Vinyl, Screens
+
+from lib.playsound import *
 
 
 
@@ -60,10 +63,10 @@ def vista():
     screens = Screens()
     camera = Camera(); camera.snakeView = snake.snake_parts[0]; ctrl.camera = camera
 
-    wall = bs.createTextureCube('img/clouds.png')
+    wall = bs.createTextureCube(os.path.join("img","clouds.png"))
     GPUwall = es.toGPUShape(wall, GL_REPEAT, GL_NEAREST)
     wallTransform = tr.matmul([tr.translate(0,0,0),tr.uniformScale(50),tr.uniformScale(1)])
-    building = bs.createTextureCube('img/building.png')
+    building = bs.createTextureCube(os.path.join("img","building.png"))
     GPUbuilding = es.toGPUShape(building, GL_REPEAT, GL_NEAREST)
     buildingTransform = tr.matmul([tr.translate(0,0,-10.01),tr.scale(20,20,10),tr.uniformScale(1)])
     bottom = bs.createColorCube(0.0,0.0,0.0)
@@ -81,7 +84,7 @@ def vista():
     frames = 0
     updates = 0
 
-    
+    playsound(os.path.join("sound","Conga_2.mp3"), block = False)
 
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events

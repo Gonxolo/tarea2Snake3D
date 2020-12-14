@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from OpenGL.GL import *
 
@@ -18,8 +20,8 @@ class Head():
         self.front = 0.20
         self.turn = 0
 
-        obj = "objects/dummy.obj"
-        headOBJ = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeRed.png")
+        obj = os.path.join("objects","dummy.obj")
+        headOBJ = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeRed.png"))
         self.GPU = es.toGPUShape(headOBJ, GL_REPEAT, GL_NEAREST)
         self.transform = tr.matmul([tr.translate(self.x,self.y,self.z),tr.uniformScale(0.5),tr.rotationZ(self.theta)])
     
@@ -102,12 +104,12 @@ class Snake():
         self.floor = None
         self.snake_parts = [Head()]
         self.bodyTypeList = [1,0,2,3,4]
-        obj = "objects/dummy.obj"
-        bodyOBJ1 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeBlack.png")
-        bodyOBJ2 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeRed.png")
-        bodyOBJ3 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeWhite.png")
-        bodyOBJ4 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeOrange.png")
-        bodyOBJ5 = obj_reader.readOBJ2(f'{obj}',"objects/textures/dudeGreen.png")
+        obj = os.path.join("objects","dummy.obj")
+        bodyOBJ1 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeBlack.png"))
+        bodyOBJ2 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeRed.png"))
+        bodyOBJ3 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeWhite.png"))
+        bodyOBJ4 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeOrange.png"))
+        bodyOBJ5 = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeGreen.png"))
         self.GPU1 = es.toGPUShape(bodyOBJ1, GL_REPEAT, GL_NEAREST)
         self.GPU2 = es.toGPUShape(bodyOBJ2, GL_REPEAT, GL_NEAREST)
         self.GPU3 = es.toGPUShape(bodyOBJ3, GL_REPEAT, GL_NEAREST)
