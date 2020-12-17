@@ -15,7 +15,7 @@ class Vinyl():
         self.x, self.y, self.z = 0.0, 0.0, -4.5
         self.exists = False
         self.theta = 0.0
-        self.rare = 0
+        self.rare = 1
         self.bans = [(None,None,None)]
         self.GPU = es.toGPUShape(obj_reader.readOBJ(os.path.join("objects","record.obj"), (1.0,1.0,1.0)), GL_REPEAT, GL_NEAREST)
         self.transform = tr.matmul([tr.translate(0.0,0.0,self.z),tr.uniformScale(1),tr.rotationZ(self.theta),tr.rotationX(np.pi/4)])
@@ -39,7 +39,7 @@ class Vinyl():
     def draw(self, pipeline, projection, view):
         glUseProgram(pipeline.shaderProgram)
 
-        if self.rare%5 == 4:
+        if self.rare%5 == 0:
             # White light in all components: ambient, diffuse and specular.
             glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 1.0, 215/255, 0.0)
             glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 0.0, 0.0, 0.0)
