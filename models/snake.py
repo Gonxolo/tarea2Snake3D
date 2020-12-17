@@ -20,10 +20,6 @@ class Head():
         self.front = 0.20
         self.turn = 0
         self.weirdLight = (1.0, 1.0, 1.0)
-
-        obj = os.path.join("objects","dummy.obj")
-        headOBJ = obj_reader.readOBJ2(f'{obj}',os.path.join("objects","textures","dudeRed.png"))
-        self.GPU = es.toGPUShape(headOBJ, GL_REPEAT, GL_NEAREST)
         self.transform = tr.matmul([tr.translate(self.x,self.y,self.z),tr.uniformScale(0.5),tr.rotationZ(self.theta)])
     
     def draw(self, objeto, pipeline, projection, view):
