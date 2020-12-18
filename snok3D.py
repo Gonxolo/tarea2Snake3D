@@ -203,7 +203,7 @@ def vista():
 
         if glfw.get_time() - timer > 1.0:
             timer += 1
-            print("FPS: ",frames," Updates: ",updates)
+            # print("FPS: ",frames," Updates: ",updates)
             updates = 0
             frames = 0
 
