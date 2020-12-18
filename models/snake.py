@@ -156,7 +156,7 @@ class Snake():
         x, y = self.snake_parts[0].x, self.snake_parts[0].y
 
         if (x-self.objective.x)**2 + (y-self.objective.y)**2 < 1.0:
-            if self.objective.rare%5 == 4:
+            if self.objective.rare%5 == 0:
                 self.floor.weirdTimer += 200
             self.objective.exists = False
             self.objective.rare += 1
