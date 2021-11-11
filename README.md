@@ -1,6 +1,38 @@
-ADVERTENCIA: ESTE JUEGO CONTIENE CAMBIOS RAPIDOS DE COLORES, POR FAVOR VER EL VIDEO ANTES DE EJECUTAR EL JUEGO
-ADVERTENCIA 2: EL VOLUMEN DE LA CANCIÓN EN EL JUEGO PUEDE VARIAR EN SU DISPOSITIVO, SE RECOMIENDA PRECAUCIÓN AL INICIARLO
+# tarea2Snake3D
+<p align="left">
+  <img align="center" src="http://ForTheBadge.com/images/badges/made-with-python.svg" alt="Made With Python" height="40"/>
+  <img align="center" src="https://img.shields.io/badge/OpenGL-593D88?style=for-the-badge&logo=opengl&logoColor=white" alt="OpenGL" height="40"/>
+  <img align="center" src="http://ForTheBadge.com/images/badges/built-with-love.svg" alt="Built With Love" height="40"/>
+</p>
 
-El juego tarda un poco en iniciarse (casi un minuto pero puede variar en otro computador), esto es debido a que se me paso la mano con las texturas y modelos, pero no tiene un gran impacto en como se juega el juego, pues una vez que todo carga no tiene problemas, me hubiera encantado poder optimizarlo más para asi no tener este problema pero debido al tiempo no me fue posible, de antemano agradezco su comprensión
+#### ⚠WARNING⚠: The game presents fast color changes, it's recommended to avoid its execution if there's a history of epilepsy.
+#### ⚠WARNING 2⚠: Game's song volume can vary on your device, caution is advised when executing it.
 
-![](https://github.com/Gonxolo/tarea2Snake3D/blob/master/img/shiba.jpg)
+## Summary
+A clone of the classic «Snake» game, where instead of a snake we control a conga line, which adds a new member every time the vinyls spread across the dance floor are picked up.
+
+## Title Screen
+
+<p align="center">
+  <a href=https://youtu.be/EtjnI834LSw><img align="center" src="readme_assets/title_screen.gif" alt="Title Screen"/></a>
+</p>
+
+## Gameplay Screenshots
+
+<p align="center">
+  <a href=https://youtu.be/EtjnI834LSw><img align="center" src="readme_assets/gameplay_1.gif" alt="Gameplay Screenshot 1"/></a>
+  <a href=https://youtu.be/EtjnI834LSw><img align="center" src="readme_assets/gameplay_2.gif" alt="Gameplay Screenshot 2"/></a>
+  <a href=https://youtu.be/EtjnI834LSw><img align="center" src="readme_assets/gameplay_3.gif" alt="Gameplay Screenshot 3"/></a>
+</p>
+
+## Game Over Screen
+
+<p align="center">
+  <a href=https://youtu.be/EtjnI834LSw><img align="center" src="readme_assets/game_over_screen.gif" alt="Game Over Screen"/></a>
+</p>
+
+## Gameplay Showcase
+
+<p align="center">
+  Link to YouTube video: <a href="https://youtu.be/0-iRIRXAfPA">SNOK 3D Showcase 🕺🕺🕺</a>
+</p>
