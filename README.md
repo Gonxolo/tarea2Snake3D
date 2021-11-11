@@ -9,7 +9,7 @@
 #### ⚠WARNING 2⚠: Game's song volume can vary on your device, caution is advised when executing it.
 
 ## Summary
-A clone of the classic «Snake» game, where instead of a snake we control a conga line, which adds a new member every time the vinyls spread across the dance floor are picked up.
+A sequel of [SNOK 2D](https://github.com/Gonxolo/tarea1Snake), but with 3D graphics instead of 2D, plus scene lighting.
 
 ## Title Screen
 
